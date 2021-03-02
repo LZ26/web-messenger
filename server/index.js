@@ -3,6 +3,8 @@ const app = express();
 const path = require('path');
 const morgan = require('morgan');
 
+const { db } = require('./db/index');
+
 //middleware for handling static files in public directory
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -12,6 +14,9 @@ app.use(express.json());
 
 //logging middleware
 app.use(morgan('dev'));
+
+//routes
+app.use('/test', require('./routes/testRoute'));
 
 //404-error handling middleware
 app.use((req, res, next) => {
@@ -29,10 +34,15 @@ app.use((err, req, res, next) => {
 
 //sets up PORT for app and initiates a server
 const PORT = 3000;
-const init = () => {
-  app.listen(PORT, () => {
-    console.log(`App is running on PORT: ${PORT}`);
-  });
+const init = async () => {
+  try {
+    await db.sync();
+    app.listen(PORT, () => {
+      console.log(`App is running on PORT: ${PORT}`);
+    });
+  } catch (err) {
+    console.error(err);
+  }
 };
 
 init();
