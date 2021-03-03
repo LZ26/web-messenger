@@ -36,7 +36,7 @@ app.use((err, req, res, next) => {
 const PORT = 3000;
 const init = async () => {
   try {
-    await db.sync();
+    await db.sync({ force: true });
     app.listen(PORT, () => {
       console.log(`App is running on PORT: ${PORT}`);
     });
